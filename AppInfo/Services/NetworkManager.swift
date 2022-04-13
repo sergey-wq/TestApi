@@ -73,7 +73,27 @@ class NetworkManager {
             .responseJSON { dataResponse in
                 switch dataResponse.result {
                 case .success(let value):
-                    let hero = Info.getResults(from: value)
+                    guard let data = value as? [String: Any],
+                          let allInfo = data["results"] as? [[String: Any]]
+                    else {
+                        return
+                    }
+                    let hero = Info.getResults(from: allInfo)
+                    completion(.success(hero))
+                case .failure(let error):
+                    print(error)
+                    completion(.failure(.decodingError))
+                }
+            }
+    }
+
+    func fetchDataWithAlamofireTopApp(_ url: String, completion: @escaping(Result<[AppResult], NetworkError>) -> Void) {
+        AF.request(url)
+            .validate()
+            .responseJSON { dataResponse in
+                switch dataResponse.result {
+                case .success(let value):
+                    let hero = AllResultsInfo.transformToResult(data: value)
                     completion(.success(hero))
                 case .failure(let error):
                     print(error)

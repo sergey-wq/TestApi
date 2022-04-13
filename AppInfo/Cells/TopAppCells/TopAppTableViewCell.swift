@@ -21,25 +21,26 @@ class TopAppTableViewCell: UITableViewCell {
 
     var appResult: [AppResult] = []
 
-
     override func awakeFromNib() {
         super.awakeFromNib()
         activityIndicator.startAnimating()
         activityIndicator.hidesWhenStopped = true
+        alamofireFetcherData()
     }
 
-//    private func fetcherData() {
-//        dataFetcherService.fetchTopApplication { [weak self] app in
-//            guard let strongSelf = self, let results = app?.feed.results else { return }
-//
-//            strongSelf.appResult = results
-//
-//            DispatchQueue.main.async {
-//                strongSelf.mainCollectionView.reloadData()
-//                strongSelf.activityIndicator.stopAnimating()
-//            }
-//        }
-//    }
+    func alamofireFetcherData() {
+        NetworkManager.shared.fetchDataWithAlamofireTopApp(Link.topApplicationURL.rawValue) { result in
+            switch result {
+            case .success(let hero):
+                self.appResult = hero
+
+                self.mainCollectionView.reloadData()
+                self.activityIndicator.stopAnimating()
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
 }
 
 extension TopAppTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {

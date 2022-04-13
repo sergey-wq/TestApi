@@ -15,9 +15,19 @@ class TopAppCollectionViewCell: UICollectionViewCell {
 
     func configure(item: AppResult) {
         topAppName.text = item.name
+        fetchImage(item: item)
+    }
 
-//        if let url = URL(string: item.artworkUrl100) {
-//            topAppImageView.kf.setImage(with: url)
-//        }
+    private func fetchImage(item: AppResult) {
+        guard let url = URL(string: item.artworkUrl100 ?? "") else { return }
+
+        NetworkManager.shared.fetchImage(from: "\(url)") { result in
+            switch result {
+            case .success(let data):
+                self.topAppImageView.image = UIImage(data: data)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }
