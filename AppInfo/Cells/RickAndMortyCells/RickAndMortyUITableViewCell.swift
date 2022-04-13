@@ -7,37 +7,28 @@
 
 import UIKit
 
-import Kingfisher
-
 class RickAndMortyUITableViewCell: UITableViewCell {
 
     @IBOutlet private weak var imagePersonImageView: UIImageView!
     @IBOutlet private weak var namePersonLabel: UILabel!
     @IBOutlet private weak var genderLabel: UILabel!
 
-    func configure(item: Results) {
+    func configure(item: Info) {
         namePersonLabel.text = item.name
         genderLabel.text = item.gender
-
-        if let urlImage = URL(string: item.image) {
-            imagePersonImageView.kf.setImage(with: urlImage)
-        }
+        fetchImage(item: item)
     }
 
-    // Решил, что библиотека сократит код
-//    private func fetchImage(item: [Results], index: Int) {
-//        guard let url = URL(string: item[index].image) else { return }
-//
-//        URLSession.shared.dataTask(with: url) { data, response, error in
-//            guard let data = data, let response = response else {
-//                print(error?.localizedDescription ?? "No error description")
-//                return
-//            }
-//            print(response)
-//            guard let image = UIImage(data: data) else { return }
-//            DispatchQueue.main.async {
-//                self.imagePersonImageView.image = image
-//            }
-//        }.resume()
-//    }
+    private func fetchImage(item: Info) {
+        guard let url = URL(string: item.image ?? "") else { return }
+
+        NetworkManager.shared.fetchImage(from: "\(url)") { result in
+            switch result {
+            case .success(let data):
+                self.imagePersonImageView.image = UIImage(data: data)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
 }

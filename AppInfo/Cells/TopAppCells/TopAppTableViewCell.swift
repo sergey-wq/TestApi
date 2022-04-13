@@ -19,7 +19,6 @@ class TopAppTableViewCell: UITableViewCell {
     }
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
-    let dataFetcherService = DataFetcherService()
     var appResult: [AppResult] = []
 
 
@@ -27,21 +26,20 @@ class TopAppTableViewCell: UITableViewCell {
         super.awakeFromNib()
         activityIndicator.startAnimating()
         activityIndicator.hidesWhenStopped = true
-        fetcherData()
     }
 
-    private func fetcherData() {
-        dataFetcherService.fetchTopApplication { [weak self] app in
-            guard let strongSelf = self, let results = app?.feed.results else { return }
-
-            strongSelf.appResult = results
-
-            DispatchQueue.main.async {
-                strongSelf.mainCollectionView.reloadData()
-                strongSelf.activityIndicator.stopAnimating()
-            }
-        }
-    }
+//    private func fetcherData() {
+//        dataFetcherService.fetchTopApplication { [weak self] app in
+//            guard let strongSelf = self, let results = app?.feed.results else { return }
+//
+//            strongSelf.appResult = results
+//
+//            DispatchQueue.main.async {
+//                strongSelf.mainCollectionView.reloadData()
+//                strongSelf.activityIndicator.stopAnimating()
+//            }
+//        }
+//    }
 }
 
 extension TopAppTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {

@@ -11,27 +11,26 @@ class RickAndMortyViewController: UIViewController {
 
     @IBOutlet weak var tabeView: UITableView!
 
-    var dataFetcherService = DataFetcherService()
-    var personInfo: [Results] = []
+    var personInfo: [Info] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
-        fetcherData()
+        alamofireFetcherData()
     }
 
     private func registerCell() {
         tabeView.register(RickAndMortyUITableViewCell.self)
     }
 
-    private func fetcherData() {
-        dataFetcherService.fetchInfoHeroes {[weak self] heroes in
-            guard let strongSelf = self, let results = heroes?.results else { return }
-
-            strongSelf.personInfo = results
-
-            DispatchQueue.main.async {
-                strongSelf.tabeView.reloadData()
+    func alamofireFetcherData() {
+        NetworkManager.shared.fetchDataWithAlamofire(Link.rickAndMortyURL.rawValue) { result in
+            switch result {
+            case .success(let hero):
+                self.personInfo = hero
+                self.tabeView.reloadData()
+            case .failure(let error):
+                print(error)
             }
         }
     }

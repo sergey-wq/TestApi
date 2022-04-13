@@ -7,7 +7,6 @@
 
 import UIKit
 
-import Kingfisher
 
 class TopAppCollectionViewCell: UICollectionViewCell {
 
@@ -17,8 +16,8 @@ class TopAppCollectionViewCell: UICollectionViewCell {
     func configure(item: AppResult) {
         topAppName.text = item.name
 
-        if let url = URL(string: item.artworkUrl100) {
-            topAppImageView.kf.setImage(with: url)
-        }
+//        if let url = URL(string: item.artworkUrl100) {
+//            topAppImageView.kf.setImage(with: url)
+//        }
     }
 }
